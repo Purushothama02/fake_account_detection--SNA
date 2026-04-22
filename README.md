@@ -1,177 +1,136 @@
-# fake_account_detection--SNA
-Fake Account Detection in Social Networks using Machine Learning
-[model.py](https://github.com/user-attachments/files/26975327/model.py)
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+# Fake Account Detection in Social Networks using Machine Learning
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import (
-    accuracy_score,
-    classification_report,
-    confusion_matrix
-)
+## M.Tech Mini Project – Social Network Analysis (SNA)
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+### Project Overview
 
-df = pd.read_csv("fake_social_media.csv")
+This project focuses on detecting fake social media accounts using Machine Learning techniques combined with Social Network Analysis (SNA) concepts.
 
-print("===== First 5 Rows =====")
-print(df.head())
+Fake accounts, bots, and spam profiles are major problems on social media platforms such as Twitter, Instagram, and Facebook. This project uses user profile features and behavioral attributes to classify whether an account is real or fake.
 
-print("\n===== Column Names =====")
-print(df.columns)
+The system compares multiple machine learning models and identifies the best-performing model for accurate fake account detection.
 
-print("\n===== Dataset Shape =====")
-print(df.shape)
+---
 
-df = df.dropna()
+## Dataset Used
 
-target = "is_fake"
+### Fake Social Media Account Detection Dataset
 
-X = df.drop(target, axis=1)
-y = df[target]
+The dataset contains 3000 labeled social media profiles with multiple features such as:
 
-X = pd.get_dummies(X, drop_first=True)
+* platform
+* has_profile_pic
+* bio_length
+* username_randomness
+* followers
+* following
+* follower_following_ratio
+* account_age_days
+* posts
+* posts_per_day
+* caption_similarity_score
+* content_similarity_score
+* follow_unfollow_rate
+* spam_comments_rate
+* generic_comment_rate
+* suspicious_links_in_bio
+* verified
+* is_fake (Target Variable)
 
-print("\n===== Preprocessing Completed =====")
-print(X.head())
+---
 
-print("\n===== Data Types After Encoding =====")
-print(X.dtypes)
+## Machine Learning Models Used
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
-)
+The following models were implemented and compared:
 
-print("\nTrain Shape:", X_train.shape)
-print("Test Shape:", X_test.shape)
+1. Logistic Regression
+2. Decision Tree Classifier
+3. Random Forest Classifier
 
-lr = LogisticRegression(max_iter=2000)
+---
 
-lr.fit(X_train, y_train)
+## Best Model
 
-y_pred_lr = lr.predict(X_test)
+### Random Forest Classifier
 
-print("\n===================================")
-print("LOGISTIC REGRESSION RESULTS")
-print("===================================")
+Random Forest achieved the highest accuracy and provided better performance compared to other models because it handles nonlinear relationships and feature interactions effectively.
 
-lr_accuracy = accuracy_score(y_test, y_pred_lr)
+---
 
-print("Accuracy:", lr_accuracy)
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred_lr))
+## Technologies Used
 
-dt = DecisionTreeClassifier(
-    random_state=42
-)
+* Python
+* Pandas
+* NumPy
+* Matplotlib
+* Seaborn
+* Scikit-learn
+* NetworkX
+* Jupyter Notebook / VS Code
 
-dt.fit(X_train, y_train)
+---
 
-y_pred_dt = dt.predict(X_test)
+## Project Structure
 
-print("\n===================================")
-print("DECISION TREE RESULTS")
-print("===================================")
+fake-account-detection-sna/
 
-dt_accuracy = accuracy_score(y_test, y_pred_dt)
+│
 
-print("Accuracy:", dt_accuracy)
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred_dt))
+├── model.py
 
-rf = RandomForestClassifier(
-    n_estimators=100,
-    random_state=42
-)
+├── fake_social_media.csv
 
-rf.fit(X_train, y_train)
+├── README.md
 
-y_pred_rf = rf.predict(X_test)
+├── requirements.txt
 
-print("\n===================================")
-print("RANDOM FOREST RESULTS")
-print("===================================")
+├── report.pdf
 
-rf_accuracy = accuracy_score(y_test, y_pred_rf)
+└── presentation.pptx
 
-print("Accuracy:", rf_accuracy)
-print("\nClassification Report:")
-print(classification_report(y_test, y_pred_rf))
+---
 
-results = pd.DataFrame({
-    "Model": [
-        "Logistic Regression",
-        "Decision Tree",
-        "Random Forest"
-    ],
-    "Accuracy": [
-        lr_accuracy,
-        dt_accuracy,
-        rf_accuracy
-    ]
-})
+## Installation
 
-print("\n===================================")
-print("FINAL MODEL COMPARISON")
-print("===================================")
+Install required dependencies using:
 
-print(results)
+pip install pandas numpy matplotlib seaborn scikit-learn networkx xgboost jupyter
 
-plt.figure(figsize=(8, 5))
+---
 
-sns.barplot(
-    x="Model",
-    y="Accuracy",
-    data=results
-)
+## Run the Project
 
-plt.title("Model Accuracy Comparison")
-plt.xticks(rotation=15)
-plt.tight_layout()
-plt.show()
+Execute the Python file using:
 
-cm = confusion_matrix(y_test, y_pred_rf)
+python model.py
 
-plt.figure(figsize=(6, 5))
+---
 
-sns.heatmap(
-    cm,
-    annot=True,
-    fmt="d"
-)
+## Output
 
-plt.title("Random Forest Confusion Matrix")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.tight_layout()
-plt.show()
+The project generates:
 
-best_model = results.loc[
-    results["Accuracy"].idxmax(),
-    "Model"
-]
+* Accuracy comparison of all models
+* Classification reports
+* Confusion Matrix
+* Accuracy comparison graph
+* Final best model selection
 
-best_accuracy = results["Accuracy"].max()
+---
 
-print("\n===================================")
-print("FINAL CONCLUSION")
-print("===================================")
+## Conclusion
 
-print(f"Best Performing Model: {best_model}")
-print(f"Best Accuracy: {best_accuracy:.4f}")
+Fake account detection is an important problem in modern social networks.
 
-print("""
-Conclusion:
-Random Forest generally performs best because it handles
-nonlinear patterns and feature interactions effectively.
+This project successfully applies Machine Learning techniques for classification and demonstrates that Random Forest is the most effective model for this use case.
 
-Hence, Random Forest is selected as the final model
-for Fake Account Detection in Social Networks.
-""")
+The project also shows how Social Network Analysis can improve cybersecurity and platform trust.
+
+---
+
+## Author
+Purushothama N
+M.Tech Student
+Mini Project – Social Network Analysis (SNA)
+
+---
